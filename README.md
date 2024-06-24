@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+<img src="https://img.shields.io/badge/-Typescript-black?style=for-the-badge&logoColor=white&logo=typescript&color=3178C6" alt="typescript" />
+<img src="https://img.shields.io/badge/-Next_._JS-black?style=for-the-badge&logoColor=white&logo=nextdotjs&color=000000" alt="nextdotjs" />
+<img src="https://img.shields.io/badge/-Tailwind_CSS-black?style=for-the-badge&logoColor=white&logo=tailwindcss&color=06B6D4" alt="tailwindcss" />
+<img src="https://img.shields.io/badge/-OpenAI-black?style=for-the-badge&logoColor=white&logo=openai&color=412991" alt="openai" />
+<img src="https://img.shields.io/badge/-gptscript-black?style=for-the-badge&logoColor=white&logo=gptscript&color=0000FF" alt="gptscript" />
 
-## Getting Started
+</div>
 
-First, run the development server:
+<h3 align="center">AI Huncfot</h3>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## <a name="introduction">🤖 Introduction</a>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This repository contains the code for the AI Hunfot project where I explore GPT Scripting, creating an AI Agent that writes stories for kids in different languages, creates images and store the stories in a database. It uses the latest tech stack i.e. Next.js, TypeScript, Tailwind CSS, OpenAI, and GPT Script leveraging the latest cashing and optimization techniques.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## <a name="tech-stack">⚙️ Tech Stack</a>
 
-## Learn More
+- Next.js
+- GPT Script
+- OpenAI / Stream
+- TypeScript
+- ShadCN
+- Tailwind CSS
 
-To learn more about Next.js, take a look at the following resources:
+## <a name="features">🔋 Features</a>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+👉 **AI Agent**: True AI Agent built with GPT Script and using multiple AI tools based on the script sequence.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+👉 **Caching**: The latest Next.js cashing optimizations and techniques.
 
-## Deploy on Vercel
+👉 **Responsive Design**: Fully functional and visually appealing across all devices and screen sizes.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+And many more, including code architecture and reusability.
