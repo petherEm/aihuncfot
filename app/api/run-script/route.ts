@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
           await run.text();
           controller.close();
-        } catch (error) {
+        } catch (error: any) {
           controller.error(error);
           console.error("Error:", error);
         }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         Connection: "keep-alive",
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
     });
