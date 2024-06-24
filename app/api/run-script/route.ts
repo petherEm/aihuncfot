@@ -4,6 +4,8 @@ import g from "../../../lib/gptScriptInstance";
 
 const script = "app/api/run-script/story-book.gpt";
 
+export const maxDuration = 30;
+
 export async function POST(request: NextRequest) {
   const { story, pages, path } = await request.json();
 
