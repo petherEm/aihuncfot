@@ -37,7 +37,7 @@ const Story = ({ story }: Props) => {
 
   return (
     <div className="">
-      <div className="px-20">
+      <div className="md:px-20">
         <Carousel setApi={setApi} className="w-full lg:w-4/5 h-56 mx-auto">
           <CarouselContent className="px-5">
             {story.pages.map((page, i) => (
