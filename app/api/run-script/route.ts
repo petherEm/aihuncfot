@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
-import g from "../../../lib/gptScriptInstance";
+import g from "@/lib/gptScriptInstance";
 
 const script = "app/api/run-script/story-book.gpt";
 
