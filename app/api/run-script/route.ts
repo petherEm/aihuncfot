@@ -10,6 +10,7 @@ const execFileAsync = promisify(execFile);
 
 const script = "app/api/run-script/story-book.gpt";
 
+console.log("Script:", script);
 // Determine the path to the gptscript binary dynamically
 const gptScriptPath = join(
   process.cwd(),
