@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   const opts: RunOpts = {
     disableCache: true,
-    input: `--story ${story} --pages ${pages} --path ${path}`,
+    input: `--story ${story} --pages ${pages} --path ${path}` ?? "",
   };
 
   try {
@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         try {
           const { stdout, stderr } = await execFileAsync(gptScriptPath, [
             script,
+            //@ts-ignore
             ...opts.input.split(" "),
           ]);
 
