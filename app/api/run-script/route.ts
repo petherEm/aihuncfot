@@ -1,15 +1,29 @@
 import { NextRequest } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
-import g from "@/lib/gptScriptInstance";
+import g from "../../../lib/gptScriptInstance";
+import { join } from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
+import fs from "fs";
+
+const execFileAsync = promisify(execFile);
 
 const script = "app/api/run-script/story-book.gpt";
+
+// Determine the path to the gptscript binary dynamically
+const gptScriptPath = join(
+  process.cwd(),
+  "node_modules",
+  "@gptscript-ai",
+  "gptscript",
+  "bin",
+  "gptscript"
+);
 
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest) {
   const { story, pages, path } = await request.json();
-
-  // Example CLI command: gptscript ./story-book.gpt --story "A robot and human become friends" --pages 5 --path ./
 
   const opts: RunOpts = {
     disableCache: true,
@@ -17,24 +31,42 @@ export async function POST(request: NextRequest) {
   };
 
   try {
+    if (!fs.existsSync(gptScriptPath)) {
+      throw new Error(`gptscript binary not found at ${gptScriptPath}`);
+    }
+
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
-        try {
-          console.log("Streaming started", script);
-          const run = await g.run(script, opts);
+        const timeoutId = setTimeout(() => {
+          controller.error(new Error("Script execution timed out"));
+          console.error("Error: Script execution timed out");
+        }, maxDuration * 1000);
 
-          run.on(RunEventType.Event, (data) => {
+        try {
+          const { stdout, stderr } = await execFileAsync(gptScriptPath, [
+            script,
+            ...opts.input.split(" "),
+          ]);
+
+          if (stderr) {
+            throw new Error(stderr);
+          }
+
+          const run = JSON.parse(stdout);
+
+          run.on(RunEventType.Event, (data: any) => {
             controller.enqueue(
               encoder.encode(`event: ${JSON.stringify(data)}\n\n`)
             );
           });
 
-          await run.text();
           controller.close();
         } catch (error: any) {
           controller.error(error);
           console.error("Error:", error);
+        } finally {
+          clearTimeout(timeoutId);
         }
       },
     });
