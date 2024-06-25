@@ -3,6 +3,10 @@ import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
 import g from "@/lib/gptScriptInstance";
 import { join } from "path";
 import fs from "fs";
+import { execFile } from "child_process";
+import { promisify } from "util";
+
+const execFileAsync = promisify(execFile);
 
 const script = "app/api/run-script/story-book.gpt";
 
@@ -21,26 +25,39 @@ export const maxDuration = 60; // Increase to help diagnose
 export async function POST(request: NextRequest) {
   console.log("POST request received");
 
-  const { story, pages, path } = await request.json();
-  console.log("Request body:", { story, pages, path });
-
-  console.log("Script:", script);
-  console.log("GPTScript Path:", gptScriptPath);
-
-  const opts: RunOpts = {
-    disableCache: true,
-    input: `--story ${story} --pages ${pages} --path ${path}`,
-  };
-
-  console.log("Options:", opts);
-
   try {
+    const { story, pages, path } = await request.json();
+    console.log("Request body parsed:", { story, pages, path });
+
+    console.log("Script:", script);
+    console.log("GPTScript Path:", gptScriptPath);
+
+    const opts: RunOpts = {
+      disableCache: true,
+      input: `--story ${story} --pages ${pages} --path ${path}`,
+    };
+
+    console.log("Options prepared:", opts);
+
+    // Check if the binary exists
     if (!fs.existsSync(gptScriptPath)) {
       console.error(`gptscript binary not found at ${gptScriptPath}`);
       throw new Error(`gptscript binary not found at ${gptScriptPath}`);
     }
 
     console.log("gptscript binary exists");
+
+    // Temporarily run the command synchronously to log output directly
+    const { stdout, stderr } = await execFileAsync(gptScriptPath, [
+      script,
+      ...(opts.input ?? "").split(" "),
+    ]);
+    if (stderr) {
+      console.error("Error running gptscript:", stderr);
+      throw new Error(stderr);
+    }
+
+    console.log("gptscript output:", stdout);
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
