@@ -1,8 +1,8 @@
 {
     "functions": {
-        "app/api/run-script/route.ts": {
+        "app/api/run-script/route.js": {
             "maxDuration": 60,
-            "includeFiles": "node_modules/@gptscript-ai/gptscript/bin/gptscript"
+            "includeFiles": "node_modules/@gptscript-ai/gptscript/bin/*"
         }
     }
 }

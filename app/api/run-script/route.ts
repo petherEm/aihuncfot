@@ -8,9 +8,8 @@ import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
 
-const script = "/api/run-script/story-book.gpt";
+const script = "app/api/run-script/story-book.gpt";
 
-console.log("Script:", script);
 // Determine the path to the gptscript binary dynamically
 const gptScriptPath = join(
   process.cwd(),
@@ -20,7 +19,6 @@ const gptScriptPath = join(
   "bin",
   "gptscript"
 );
-console.log("GPTScript Path:", gptScriptPath);
 
 export const maxDuration = 60; // Increase to help diagnose
 
