@@ -16,12 +16,14 @@ const gptScriptPath = join(
   "gptscript"
 );
 
-export const maxDuration = 30;
+export const maxDuration = 60; // Increase to help diagnose
 
 export async function POST(request: NextRequest) {
-  const { story, pages, path } = await request.json();
+  console.log("POST request received");
 
-  // Log the script and opts to verify their values
+  const { story, pages, path } = await request.json();
+  console.log("Request body:", { story, pages, path });
+
   console.log("Script:", script);
   console.log("GPTScript Path:", gptScriptPath);
 
@@ -30,11 +32,11 @@ export async function POST(request: NextRequest) {
     input: `--story ${story} --pages ${pages} --path ${path}`,
   };
 
-  // Log the opts to verify their values
   console.log("Options:", opts);
 
   try {
     if (!fs.existsSync(gptScriptPath)) {
+      console.error(`gptscript binary not found at ${gptScriptPath}`);
       throw new Error(`gptscript binary not found at ${gptScriptPath}`);
     }
 
@@ -48,6 +50,7 @@ export async function POST(request: NextRequest) {
           const run = await g.run(script, opts);
 
           run.on(RunEventType.Event, (data) => {
+            console.log("Event received:", data);
             controller.enqueue(
               encoder.encode(`event: ${JSON.stringify(data)}\n\n`)
             );
@@ -57,8 +60,8 @@ export async function POST(request: NextRequest) {
           controller.close();
           console.log("gptscript run completed");
         } catch (error: any) {
-          controller.error(error);
           console.error("Error during run:", error);
+          controller.error(error);
         }
       },
     });
