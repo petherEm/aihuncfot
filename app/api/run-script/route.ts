@@ -20,7 +20,7 @@ const gptScriptPath = join(
   "gptscript"
 );
 
-export const maxDuration = 30;
+export const maxDuration = 60; // Set this as needed
 
 export async function POST(request: NextRequest) {
   const { story, pages, path } = await request.json();
