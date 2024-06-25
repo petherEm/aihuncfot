@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          console.log("Streaming started", script);
           const run = await g.run(script, opts);
 
           run.on(RunEventType.Event, (data) => {

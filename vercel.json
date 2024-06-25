@@ -1,7 +1,0 @@
-{
-    "functions": {
-        "api/run-script": {
-            "includeFiles": "node_modules/@gptscript-ai/gptscript/bin/gptscript"
-        }
-    }
-}
