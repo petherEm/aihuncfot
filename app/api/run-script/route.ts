@@ -32,32 +32,27 @@ export async function POST(request: NextRequest) {
     console.log("Script:", script);
     console.log("GPTScript Path:", gptScriptPath);
 
+    // Check if the binary exists
+    if (!fs.existsSync(gptScriptPath)) {
+      console.error(`gptscript binary not found at ${gptScriptPath}`);
+      return new Response(
+        JSON.stringify({
+          error: `gptscript binary not found at ${gptScriptPath}`,
+        }),
+        {
+          status: 500,
+        }
+      );
+    }
+
+    console.log("gptscript binary exists");
+
     const opts: RunOpts = {
       disableCache: true,
       input: `--story ${story} --pages ${pages} --path ${path}`,
     };
 
     console.log("Options prepared:", opts);
-
-    // Check if the binary exists
-    if (!fs.existsSync(gptScriptPath)) {
-      console.error(`gptscript binary not found at ${gptScriptPath}`);
-      throw new Error(`gptscript binary not found at ${gptScriptPath}`);
-    }
-
-    console.log("gptscript binary exists");
-
-    // Temporarily run the command synchronously to log output directly
-    const { stdout, stderr } = await execFileAsync(gptScriptPath, [
-      script,
-      ...(opts.input ?? "").split(" "),
-    ]);
-    if (stderr) {
-      console.error("Error running gptscript:", stderr);
-      throw new Error(stderr);
-    }
-
-    console.log("gptscript output:", stdout);
 
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
