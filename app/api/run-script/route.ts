@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
 import g from "@/lib/gptScriptInstance";
-import fs from "fs";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,9 +30,19 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  // Log environment variables
+  console.log("Environment Variables:", process.env);
+
   const opts: RunOpts = {
     disableCache: true,
     input: `--story ${story} --pages ${pages} --path ${outputPath}`,
+    env: {
+      ...process.env, // Ensure existing environment variables are passed
+      //@ts-ignore
+      GPTSCRIPT_BIN:
+        process.env.GPTSCRIPT_BIN ||
+        "node_modules/@gptscript-ai/gptscript/bin/gptscript",
+    },
   };
 
   try {
