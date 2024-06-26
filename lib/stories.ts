@@ -7,6 +7,7 @@ const storiesDirectory = path.join(process.cwd(), "public/stories");
 
 export function getAllStories(): Story[] {
   if (!fs.existsSync(storiesDirectory)) {
+    console.log(`Stories directory does not exist: ${storiesDirectory}`);
     return [];
   }
 
@@ -14,6 +15,8 @@ export function getAllStories(): Story[] {
 
   const stories: Story[] = storyFolders.map((storyFolder) => {
     const storyPath = path.join(storiesDirectory, storyFolder);
+    console.log(`Processing story folder: ${storyPath}`);
+
     const files = fs.readdirSync(storyPath);
 
     const pages: Page[] = [];
@@ -24,8 +27,11 @@ export function getAllStories(): Story[] {
       const type = path.extname(file).substring(1);
       const pageNumber = file.match(/page(\d+)\./)?.[1];
 
+      console.log(
+        `Processing file: ${filePath} | Type: ${type} | Page number: ${pageNumber}`
+      );
+
       if (pageNumber) {
-        // { page1: { txt: '...', png: '...' }, page2: { txt: '...', png: '...' } }
         if (!pageMap[pageNumber]) {
           pageMap[pageNumber] = {};
         }
