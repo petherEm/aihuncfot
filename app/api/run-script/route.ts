@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
 import g from "@/lib/gptScriptInstance";
 import path from "path";
@@ -8,18 +8,23 @@ const script = path.join(process.cwd(), "app/api/run-script/story-book.gpt");
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
-  const { story, pages, path } = await request.json();
-
-  const opts: RunOpts = {
-    disableCache: true,
-    input: `--story ${story} --pages ${pages} --path ${path}`,
-  };
+  console.log("API request received:", request.url);
 
   try {
+    const { story, pages, path: filePath } = await request.json();
+
+    console.log("Request body:", { story, pages, filePath });
+
+    const opts: RunOpts = {
+      disableCache: true,
+      input: `--story ${story} --pages ${pages} --path ${filePath}`,
+    };
+
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          console.log("Running GPTScript instance...");
           const run = await g.run(script, opts);
 
           run.on(RunEventType.Event, (data) => {
@@ -30,22 +35,26 @@ export async function POST(request: NextRequest) {
 
           await run.text();
           controller.close();
-        } catch (error: any) {
+        } catch (error) {
+          console.error("Error running GPTScript instance:", error);
           controller.error(error);
-          console.error("Error:", error);
         }
       },
     });
 
-    return new Response(stream, {
+    const response = new Response(stream, {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
-        // Connection: "keep-alive",
       },
     });
+
+    console.log("API response sent:", response.status);
+
+    return response;
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error("API error:", error);
+    return new NextResponse(JSON.stringify({ error: error.message }), {
       status: 500,
     });
   }
