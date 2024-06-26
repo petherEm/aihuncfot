@@ -2,17 +2,18 @@ import { NextRequest } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
 import g from "@/lib/gptScriptInstance";
 import path from "path";
+import { spawn } from "child_process";
 
 const script = path.join(process.cwd(), "app/api/run-script/story-book.gpt");
 
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
-  const { story, pages, path } = await request.json();
+  const { story, pages, path: outputPath } = await request.json();
 
   const opts: RunOpts = {
     disableCache: true,
-    input: `--story ${story} --pages ${pages} --path ${path}`,
+    input: `--story ${story} --pages ${pages} --path ${outputPath}`,
   };
 
   try {
