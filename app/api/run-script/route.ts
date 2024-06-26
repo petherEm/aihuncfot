@@ -14,11 +14,7 @@ const script =
 
 export const maxDuration = 60;
 
-export async function POST(request: {
-  json: () =>
-    | PromiseLike<{ story: any; pages: any; path: any }>
-    | { story: any; pages: any; path: any };
-}) {
+export async function POST(request: NextRequest) {
   console.log("POST request received");
 
   const { story, pages, path: outputPath } = await request.json();
