@@ -2,12 +2,23 @@ import { NextRequest } from "next/server";
 import { RunEventType, RunOpts } from "@gptscript-ai/gptscript";
 import g from "@/lib/gptScriptInstance";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const script = process.env.GPT_SCRIPT_PATH;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const script =
+  process.env.GPT_SCRIPT_PATH ||
+  path.join(__dirname, "app/api/run-script/story-book.gpt");
 
 export const maxDuration = 60;
 
-export async function POST(request: NextRequest) {
+export async function POST(request: {
+  json: () =>
+    | PromiseLike<{ story: any; pages: any; path: any }>
+    | { story: any; pages: any; path: any };
+}) {
   console.log("POST request received");
 
   const { story, pages, path: outputPath } = await request.json();
@@ -16,7 +27,7 @@ export async function POST(request: NextRequest) {
   console.log("Resolved script path:", script);
 
   // Check if the file exists
-  if (script && !fs.existsSync(script)) {
+  if (!fs.existsSync(script)) {
     console.error("Script file not found:", script);
     return new Response(JSON.stringify({ error: "Script file not found" }), {
       status: 500,
@@ -33,7 +44,7 @@ export async function POST(request: NextRequest) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const run = await g.run(script ?? "", opts);
+          const run = await g.run(script, opts);
 
           run.on(RunEventType.Event, (data) => {
             controller.enqueue(
@@ -43,7 +54,7 @@ export async function POST(request: NextRequest) {
 
           await run.text();
           controller.close();
-        } catch (error: any) {
+        } catch (error) {
           controller.error(error);
           console.error("Error during script execution:", error);
         }
